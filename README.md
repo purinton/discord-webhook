@@ -2,7 +2,7 @@
 
 ## @purinton/discord-webhook [![npm version](https://img.shields.io/npm/v/@purinton/discord-webhook.svg)](https://www.npmjs.com/package/@purinton/discord-webhook)[![license](https://img.shields.io/github/license/purinton/discord-webhook.svg)](LICENSE)[![build status](https://github.com/purinton/discord-webhook/actions/workflows/nodejs.yml/badge.svg)](https://github.com/purinton/discord-webhook/actions)
 
-> A discord-webhook for Node.js (Insert Brief Description)
+> A simple, promise-based Discord webhook sender for Node.js with built-in rate limit handling.
 
 ---
 
@@ -11,13 +11,16 @@
 - [Features](#features)
 - [Installation](#installation)
 - [Usage](#usage)
-  - [ESM Example](#esm-example)
-  - [CommonJS Example](#commonjs-example)
 - [API](#api)
 - [TypeScript](#typescript)
 - [License](#license)
 
 ## Features
+
+- Send messages to Discord webhooks with a single function
+- Handles Discord rate limits automatically (HTTP 429)
+- ESM-first, TypeScript types included
+- Customizable fetch for testing/mocking
 
 ## Installation
 
@@ -27,38 +30,54 @@ npm install @purinton/discord-webhook
 
 ## Usage
 
-### ESM Example
-
 ```js
-// Example for ESM (module JS) usage
+import { sendMessage } from '@purinton/discord-webhook';
 
-```
-
-### CommonJS Example
-
-```js
-// Example for CommonJS usage
-
+const url = 'https://discord.com/api/webhooks/your-webhook-id/your-webhook-token';
+const body = { content: 'Hello from discord-webhook!' };
+try {
+    const response = await sendMessage({ url, body });
+    if (response.ok) {
+        console.log('Message sent successfully!');
+    } else {
+        console.error('Failed to send message:', response.status, await response.text());
+    }
+} catch (err) {
+    console.error('Error sending message:', err);
+}
 ```
 
 ## API
 
-### method1 signature
+### sendMessage({ url, body }, options?)
 
-description
+Sends a message to a Discord webhook URL, handling rate limits with automatic retry.
 
-### method2 signature
+**Parameters:**
 
-description
+- `url` (string): The Discord webhook URL.
+- `body` (object): The JSON body to send (e.g., `{ content: 'Hello!' }`).
+- `options` (object, optional):
+  - `fetchFn` (function): Custom fetch function for testing/mocking.
+  - `maxRetries` (number): Maximum number of retries on rate limit (default: 3).
 
-... etc ...
+**Returns:**
+
+- `Promise<Response>`: The fetch response.
+
+**Throws:**
+
+- Error if the URL or body is invalid, or if max retries are exceeded due to rate limiting.
 
 ## TypeScript
 
 Type definitions are included:
 
 ```ts
-
+export declare function sendMessage(
+  params: { url: string; body: object },
+  options?: { fetchFn?: typeof fetch; maxRetries?: number }
+): Promise<Response>;
 ```
 
 ## Support
