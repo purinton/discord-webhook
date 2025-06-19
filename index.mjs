@@ -2,16 +2,18 @@ import fetch from 'node-fetch';
 
 /**
  * Sends a message to a Discord webhook URL, handling rate limits with automatic retry.
- * @param {Object} params
- * @param {string} params.url - The Discord webhook URL.
+ *
+ * @param {Object} params - The parameters for sending the message.
  * @param {Object} params.body - The JSON body to send (e.g., { content: 'Hello!' }).
- * @param {Object} [options]
- * @param {Function} [options.fetchFn=fetch] - Custom fetch function for testing/mocking.
- * @param {number} [options.maxRetries=3] - Maximum number of retries on rate limit.
+ * @param {string} [params.url=process.env.DISCORD_WEBHOOK] - The Discord webhook URL. Defaults to the DISCORD_WEBHOOK environment variable.
+ * @param {number} [params.maxRetries=3] - Maximum number of retries on rate limit.
+ * @param {Function} [params.fetchFn=fetch] - Custom fetch function for testing/mocking.
  * @returns {Promise<Response>} The fetch response.
  * @throws {Error} If the URL or body is invalid, or if max retries are exceeded.
  */
-export async function sendMessage({ url, body }, {
+export async function sendMessage({ 
+  body,
+  url = process.env.DISCORD_WEBHOOK,
   maxRetries = 3,
   fetchFn = fetch,
 } = {}) {

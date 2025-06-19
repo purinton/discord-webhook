@@ -21,6 +21,7 @@
 - Handles Discord rate limits automatically (HTTP 429)
 - ESM-first, TypeScript types included
 - Customizable fetch for testing/mocking
+- Supports default webhook URL from `process.env.DISCORD_WEBHOOK`
 
 ## Installation
 
@@ -30,36 +31,40 @@ npm install @purinton/discord-webhook
 
 ## Usage
 
+### ESM Example
+
 ```js
 import { sendMessage } from '@purinton/discord-webhook';
 
-const url = 'https://discord.com/api/webhooks/your-webhook-id/your-webhook-token';
-const body = { content: 'Hello from discord-webhook!' };
-try {
-    const response = await sendMessage({ url, body });
+const webhookUrl = 'https://discord.com/api/webhooks/your-webhook-id/your-webhook-token';
+const messageBody = { content: 'Hello from discord-webhook!' };
+
+(async () => {
+  try {
+    const response = await sendMessage({ url: webhookUrl, body: messageBody });
     if (response.ok) {
-        console.log('Message sent successfully!');
+      console.log('Message sent successfully!');
     } else {
-        console.error('Failed to send message:', response.status, await response.text());
+      console.error('Failed to send message:', response.status, await response.text());
     }
-} catch (err) {
+  } catch (err) {
     console.error('Error sending message:', err);
-}
+  }
+})();
 ```
 
 ## API
 
-### sendMessage({ url, body }, options?)
+### sendMessage({ body, url = process.env.DISCORD_WEBHOOK, maxRetries = 3, fetchFn = fetch })
 
 Sends a message to a Discord webhook URL, handling rate limits with automatic retry.
 
 **Parameters:**
 
-- `url` (string): The Discord webhook URL.
 - `body` (object): The JSON body to send (e.g., `{ content: 'Hello!' }`).
-- `options` (object, optional):
-  - `fetchFn` (function): Custom fetch function for testing/mocking.
-  - `maxRetries` (number): Maximum number of retries on rate limit (default: 3).
+- `url` (string, optional): The Discord webhook URL. Defaults to `process.env.DISCORD_WEBHOOK`.
+- `maxRetries` (number, optional): Maximum number of retries on rate limit (default: 3).
+- `fetchFn` (function, optional): Custom fetch function for testing/mocking (default: `fetch`).
 
 **Returns:**
 
@@ -74,10 +79,12 @@ Sends a message to a Discord webhook URL, handling rate limits with automatic re
 Type definitions are included:
 
 ```ts
-export declare function sendMessage(
-  params: { url: string; body: object },
-  options?: { fetchFn?: typeof fetch; maxRetries?: number }
-): Promise<Response>;
+export declare function sendMessage(params?: {
+  body: object;
+  url?: string;
+  maxRetries?: number;
+  fetchFn?: typeof fetch;
+}): Promise<Response>;
 ```
 
 ## Support

@@ -14,7 +14,7 @@ function createMockFetch(responses) {
 test('sendMessage sends successfully on first try', async () => {
   const mockResponse = { status: 204, ok: true, headers: { get: () => null } };
   const fetchFn = createMockFetch([mockResponse]);
-  const res = await sendMessage({ url: 'http://test', body: { content: 'hi' } }, { fetchFn });
+  const res = await sendMessage({ body: { content: 'hi' }, url: 'http://test', fetchFn });
   expect(res).toBe(mockResponse);
 });
 
@@ -26,7 +26,7 @@ test('sendMessage retries on rate limit and succeeds', async () => {
   };
   const successResponse = { status: 204, ok: true, headers: { get: () => null } };
   const fetchFn = createMockFetch([rateLimitResponse, successResponse]);
-  const res = await sendMessage({ url: 'http://test', body: { content: 'hi' } }, { fetchFn, maxRetries: 2 });
+  const res = await sendMessage({ body: { content: 'hi' }, url: 'http://test', fetchFn, maxRetries: 2 });
   expect(res).toBe(successResponse);
 });
 
@@ -38,6 +38,6 @@ test('sendMessage throws after exceeding max retries', async () => {
   };
   const fetchFn = createMockFetch([rateLimitResponse, rateLimitResponse, rateLimitResponse, rateLimitResponse]);
   await expect(
-    sendMessage({ url: 'http://test', body: { content: 'hi' } }, { fetchFn, maxRetries: 2 })
+    sendMessage({ body: { content: 'hi' }, url: 'http://test', fetchFn, maxRetries: 2 })
   ).rejects.toThrow('Rate limited: max retries exceeded');
 });

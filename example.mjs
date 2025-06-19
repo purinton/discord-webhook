@@ -3,6 +3,7 @@ import { sendMessage } from '@purinton/discord-webhook';
 
 const url = 'https://discord.com/api/webhooks/your-webhook-id/your-webhook-token';
 const body = { content: 'Hello from discord-webhook!' };
+
 try {
     const response = await sendMessage({ url, body });
     if (response.ok) {
