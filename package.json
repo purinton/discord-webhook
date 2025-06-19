@@ -1,7 +1,7 @@
 {
     "name": "@purinton/discord-webhook",
     "type": "module",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "A Node.js discord-webhook.",
     "main": "index.cjs",
     "module": "index.mjs",
