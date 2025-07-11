@@ -1,7 +1,7 @@
 {
     "name": "@purinton/discord-webhook",
     "type": "module",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "description": "A simple, promise-based Discord webhook sender for Node.js with built-in rate limit handling.",
     "module": "index.mjs",
     "types": "index.d.ts",
@@ -42,7 +42,7 @@
     },
     "homepage": "https://github.com/purinton/discord-webhook#readme",
     "devDependencies": {
-        "jest": "^30.0.1"
+        "jest": "^30.0.4"
     },
     "jest": {
         "testEnvironment": "node",
